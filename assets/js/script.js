@@ -3,7 +3,11 @@
 // in the html.
 $(function () {
   // TODO: Add code to display the current date in the header of the page.
-  // let temp = "2008-01-01" + dayjs().hour();
+
+  /*  var localizedFormat = require("dayjs/plugin/localizedFormat");
+  dayjs.extend(localizedFormat);
+ */
+
   var currentDay = dayjs();
   console.log("currentDay: ", currentDay);
   $("#currentDay").text(currentDay.format("ddd, D MMM YYYY"));
@@ -12,26 +16,24 @@ $(function () {
   // attribute of each time-block be used to conditionally add or remove the
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
-  var currentHour = dayjs(currentDay).hour();
-  console.log("currentHour: ", currentHour);
   function compareTime() {
     //compares each time block to current hour and sets apropriate classes
-    currentHour = dayjs(currentDay).hour();
+    var currentHour = dayjs();
+    console.log("currentHour: ", currentHour.format("h"));
     $(".time-block").each(function () {
       $(this).removeClass("past present future");
       var hour = $(this).attr("id");
       hour = Number(hour.substring(hour.length - 2));
-      if (currentHour > hour) {
+      if (dayjs(currentDay).hour(hour).isBefore(currentHour, "hour")) {
         $(this).addClass("past");
-      } else if (currentHour == hour) {
-        $(this).addClass("present");
-      } else {
+      } else if (dayjs(currentDay).hour(hour).isAfter(currentHour, "hour")) {
         $(this).addClass("future");
+      } else {
+        $(this).addClass("present");
       }
     });
   }
 
-  setInterval(compareTime(), 600000);
   // TODO: Add a listener for click events on the save button. This code should
   // use the id in the containing time-block as a key to save the user input in
   // local storage. HINT: What does `this` reference in the click listener
@@ -42,4 +44,7 @@ $(function () {
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
+
+  compareTime();
+  setInterval(compareTime, 600000); //checks time every 10 mins
 });
