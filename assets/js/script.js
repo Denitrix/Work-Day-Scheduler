@@ -61,6 +61,7 @@ $(function () {
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
   function getSaved() {
+    // gets stored events for the selected date at each time from local storage
     var saveDate = dayjs(currentDate).format("DD/MM/YYYY");
     var calendar = JSON.parse(localStorage.getItem("calendar")) || {};
     if (saveDate in calendar) {
