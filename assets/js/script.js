@@ -9,8 +9,11 @@ $(function () {
  */
 
   var currentDay = dayjs();
-  console.log("currentDay: ", currentDay);
-  $("#currentDay").text(currentDay.format("ddd, D MMM YYYY"));
+  function setDate(input) {
+    currentDay = dayjs(input);
+    console.log("currentDay: ", currentDay);
+    $("#currentDay").text(currentDay.format("ddd, D MMM YYYY"));
+  }
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
   // attribute of each time-block be used to conditionally add or remove the
@@ -45,6 +48,12 @@ $(function () {
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
 
+  setDate();
   compareTime();
   setInterval(compareTime, 600000); //checks time every 10 mins
+  $("#selectDay").on("change", function () {
+    var selected = $(this).val();
+    setDate(selected);
+    compareTime();
+  });
 });
