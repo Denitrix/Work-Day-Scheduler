@@ -3,21 +3,20 @@
 // in the html.
 $(function () {
   // TODO: Add code to display the current date in the header of the page.
-
-  /*  var localizedFormat = require("dayjs/plugin/localizedFormat");
-  dayjs.extend(localizedFormat);
- */
-
-  var currentDay = dayjs();
+  /* var localizedFormat = require("dayjs/plugin/localizedFormat");
+  dayjs.extend(localizedFormat); */
+  var currentDate = dayjs();
   function setDate(input) {
-    currentDay = dayjs(input);
-    console.log("currentDay: ", currentDay);
-    $("#currentDay").text(currentDay.format("ddd, D MMM YYYY"));
+    //sets the shown date to the date inputed
+    currentDate = dayjs(input);
+    console.log("currentDay: ", currentDate);
+    $("#currentDay").text(currentDate.format("ddd, D MMM YYYY"));
   }
+
   // TODO: Add code to apply the past, present, or future class to each time
   // block by comparing the id to the current hour. HINTS: How can the id
   // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
+  // past, present, and future classes? How can Date.js be used to get the
   // current hour in 24-hour time?
   function compareTime() {
     //compares each time block to current hour and sets apropriate classes
@@ -27,9 +26,9 @@ $(function () {
       $(this).removeClass("past present future");
       var hour = $(this).attr("id");
       hour = Number(hour.substring(hour.length - 2));
-      if (dayjs(currentDay).hour(hour).isBefore(currentHour, "hour")) {
+      if (dayjs(currentDate).hour(hour).isBefore(currentHour, "hour")) {
         $(this).addClass("past");
-      } else if (dayjs(currentDay).hour(hour).isAfter(currentHour, "hour")) {
+      } else if (dayjs(currentDate).hour(hour).isAfter(currentHour, "hour")) {
         $(this).addClass("future");
       } else {
         $(this).addClass("present");
@@ -43,7 +42,22 @@ $(function () {
   // function? How can DOM traversal be used to get the "hour-x" id of the
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
-  //
+  function save() {
+    //saves text from the textbox to local storage for chosen date and time
+    var hour = $(this).parent().attr("id");
+    var text = $(this).siblings(".description").val();
+    console.log("Hour: ", hour, ", Text: ", text);
+    var saveDate = dayjs(currentDate).format("DD/MM/YYYY");
+    var calendar = JSON.parse(localStorage.getItem("calendar")) || {};
+    if (!(saveDate in calendar)) {
+      calendar[saveDate] = {};
+    }
+    console.log(calendar);
+    var savedText = calendar[saveDate];
+    savedText[hour] = text;
+    console.log("Saved: ", savedText, " Calendar: ", calendar);
+    localStorage.setItem("calendar", JSON.stringify(calendar));
+  }
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
@@ -51,9 +65,15 @@ $(function () {
   setDate();
   compareTime();
   setInterval(compareTime, 600000); //checks time every 10 mins
-  $("#selectDay").on("change", function () {
+  $("#selectDate").on("change", function () {
+    //when the date in the selectDate input changes runs setDate and compareTime with new input
     var selected = $(this).val();
     setDate(selected);
     compareTime();
+    $(".description").each(function () {
+      //clears text boxes
+      $(this).val("");
+    });
   });
+  $(".saveBtn").click(save);
 });
