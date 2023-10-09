@@ -46,7 +46,6 @@ $(function () {
     //saves text from the textbox to local storage for chosen date and time
     var hour = $(this).parent().attr("id");
     var text = $(this).siblings(".description").val();
-    console.log("Hour: ", hour, ", Text: ", text);
     var saveDate = dayjs(currentDate).format("DD/MM/YYYY");
     var calendar = JSON.parse(localStorage.getItem("calendar")) || {};
     if (!(saveDate in calendar)) {
@@ -61,19 +60,34 @@ $(function () {
   // TODO: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
+  function getSaved() {
+    var saveDate = dayjs(currentDate).format("DD/MM/YYYY");
+    var calendar = JSON.parse(localStorage.getItem("calendar")) || {};
+    if (saveDate in calendar) {
+      var events = calendar[saveDate];
+      console.log("Events: ", events);
+      $(".description").each(function () {
+        var hour = $(this).parent().attr("id");
+        $(this).val(events[hour]);
+      });
+    } else {
+      $(".description").each(function () {
+        //clears text boxes
+        $(this).val("");
+      });
+    }
+  }
 
   setDate();
   compareTime();
+  getSaved();
   setInterval(compareTime, 600000); //checks time every 10 mins
   $("#selectDate").on("change", function () {
     //when the date in the selectDate input changes runs setDate and compareTime with new input
     var selected = $(this).val();
     setDate(selected);
     compareTime();
-    $(".description").each(function () {
-      //clears text boxes
-      $(this).val("");
-    });
+    getSaved();
   });
   $(".saveBtn").click(save);
 });
