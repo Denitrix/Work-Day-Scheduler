@@ -3,10 +3,10 @@ $(function () {
   dayjs.extend(localizedFormat); */
   var currentDate = dayjs();
   function setDate(input) {
+    console.log("Input:", input);
     //sets the shown date to the date inputed
     currentDate = dayjs(input);
     console.log("currentDay: ", currentDate);
-    $("#currentDay").text(currentDate.format("ddd, D MMM YYYY"));
   }
 
   function compareTime() {
@@ -62,7 +62,8 @@ $(function () {
     }
   }
 
-  setDate();
+  setDate(dayjs().format("YYYY-MM-DD"));
+  // $("#currentDay").text("Today is: " + currentDate.format("ddd, D MMM YYYY"));
   compareTime();
   getSaved();
   setInterval(compareTime, 600000); //checks time every 10 mins
