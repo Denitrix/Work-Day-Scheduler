@@ -62,6 +62,7 @@ $(function () {
     }
   }
 
+  $("#selectDate").val(dayjs().format("YYYY-MM-DD"));
   setDate(dayjs().format("YYYY-MM-DD"));
   // $("#currentDay").text("Today is: " + currentDate.format("ddd, D MMM YYYY"));
   compareTime();
